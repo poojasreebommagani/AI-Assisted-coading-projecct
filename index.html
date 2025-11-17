@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medicine Reminder App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      color: green;
+    }
+
+    ul {
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Medicine Reminder</h2>
+    <form id="reminderForm">
+      <label for="medicine">Medicine Name:</label>
+      <input type="text" id="medicine" required>
+
+      <label for="dosage">Dosage:</label>
+      <input type="text" id="dosage" required>
+
+      <label for="date">Reminder Date:</label>
+      <input type="date" id="date" required>
+
+      <label for="time">Reminder Time:</label>
+      <input type="time" id="time" required>
+
+      <button type="submit">Set Reminder</button>
+    </form>
+    <p id="status"></p>
+
+    <ul id="reminderList"></ul>
+
+    <!-- 🔊 Sound file -->
+    <audio id="reminderSound" src="c:\Users\Poojasree\Downloads\new-notification-022-370046.mp3" preload="auto"></audio>
+  </div>
+
+  <script>
+    const reminderForm = document.getElementById("reminderForm");
+    const reminderList = document.getElementById("reminderList");
+    const status = document.getElementById("status");
+    const reminderSound = document.getElementById("reminderSound");
+
+    const reminders = [];
+
+    reminderForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const medicine = document.getElementById("medicine").value;
+      const dosage = document.getElementById("dosage").value;
+      const date = document.getElementById("date").value;
+      const time = document.getElementById("time").value;
+
+      const reminderTime = new Date(`${date}T${time}`);
+      const now = new Date();
+      const delay = reminderTime - now;
+
+      if (delay <= 0) {
+        status.textContent = "Please choose a future time.";
+        status.style.color = "red";
+        return;
+      }
+
+      reminders.push({ medicine, dosage, reminderTime });
+
+      const li = document.createElement("li");
+      li.textContent = `💊 ${medicine} (${dosage}) at ${reminderTime.toLocaleString()}`;
+      reminderList.appendChild(li);
+
+      setTimeout(() => {
+        alert(`💊 Time to take your medicine: ${medicine} (${dosage})`);
+        reminderSound.play(); // 🔊 Play sound
+      }, delay);
+
+      reminderForm.reset();
+      status.textContent = "Reminder set successfully!";
+      status.style.color = "green";
+    });
+  </script>
+</body>
+</html>
